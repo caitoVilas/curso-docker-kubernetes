@@ -54,7 +54,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private Usuario findOne(Long id){
         var user = usuarioRepository.findById(id).orElseThrow(() -> {
             log.error("ERROR: ".concat("usuario no encontrado"));
-            return new RuntimeException();
+            return new RuntimeException("usuario no encontrado");
         });
         return user;
     }

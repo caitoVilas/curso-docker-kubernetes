@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8001
 spring:
   application:
     name: msvc-usuarios
@@ -13,3 +13,8 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQLDialect
+spring-doc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger.html

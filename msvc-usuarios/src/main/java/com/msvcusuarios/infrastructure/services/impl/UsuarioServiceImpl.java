@@ -1,5 +1,6 @@
 package com.msvcusuarios.infrastructure.services.impl;
 
+import com.msvcusuarios.api.exceptions.customs.NotFoundException;
 import com.msvcusuarios.api.models.requests.UsuarioRequest;
 import com.msvcusuarios.api.models.responses.UsuarioResponse;
 import com.msvcusuarios.domain.entities.Usuario;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -45,6 +45,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         log.info("---> inicio servicio guardar usuario");
         this.findOne(id);
@@ -52,10 +53,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     private Usuario findOne(Long id){
-        var user = usuarioRepository.findById(id).orElseThrow(() -> {
+        return usuarioRepository.findById(id).orElseThrow(() -> {
             log.error("ERROR: ".concat("usuario no encontrado"));
-            return new RuntimeException("usuario no encontrado");
+            return new NotFoundException("usuario no encontrado");
         });
-        return user;
     }
 }

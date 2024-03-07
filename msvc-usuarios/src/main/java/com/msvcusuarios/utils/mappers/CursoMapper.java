@@ -4,7 +4,7 @@ import com.msvcusuarios.api.models.requests.UsuarioRequest;
 import com.msvcusuarios.api.models.responses.UsuarioResponse;
 import com.msvcusuarios.domain.entities.Usuario;
 
-public class UsuarioMappers {
+public class CursoMapper {
 
     public static Usuario maptoEntity(UsuarioRequest request){
         return Usuario.builder()

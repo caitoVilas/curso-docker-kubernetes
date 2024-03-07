@@ -6,7 +6,7 @@ import com.msvcusuarios.api.models.responses.UsuarioResponse;
 import com.msvcusuarios.domain.entities.Usuario;
 import com.msvcusuarios.domain.repositories.UsuarioRepository;
 import com.msvcusuarios.infrastructure.services.contracts.UsuarioService;
-import com.msvcusuarios.utils.mappers.UsuarioMappers;
+import com.msvcusuarios.utils.mappers.CursoMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public List<UsuarioResponse> list() {
         log.info("---> inicio servicio mostrar usuarios");
         var usuarios = usuarioRepository.findAll();
-        return usuarios.stream().map(UsuarioMappers::mapToDto).toList();
+        return usuarios.stream().map(CursoMapper::mapToDto).toList();
     }
 
     @Override
@@ -33,15 +33,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioResponse getById(Long id) {
         log.info("---> inicio servicio buscar usuario por id");
         var user = this.findOne(id);
-        return UsuarioMappers.mapToDto(user);
+        return CursoMapper.mapToDto(user);
     }
 
     @Override
     @Transactional
     public UsuarioResponse save(UsuarioRequest request) {
         log.info("---> inicio servicio guardar usuario");
-        var user = usuarioRepository.save(UsuarioMappers.maptoEntity(request));
-        return UsuarioMappers.mapToDto(user);
+        var user = usuarioRepository.save(CursoMapper.maptoEntity(request));
+        return CursoMapper.mapToDto(user);
     }
 
     @Override

@@ -1,19 +1,17 @@
-package com.msvccursos.api.models.responses;
+package com.msvccursos.domain.models;
 
-import com.msvccursos.domain.models.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class CursoResponse {
+public class Usuario {
     private Long id;
     private String name;
-    private List<Usuario> usuarios;
+    private String email;
+    private String password;
 }

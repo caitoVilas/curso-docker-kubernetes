@@ -1,10 +1,13 @@
 package com.msvccursos.api.controllers;
 
 import com.msvccursos.api.models.requests.CursoRequest;
+import com.msvccursos.api.models.requests.UsuarioRequest;
 import com.msvccursos.api.models.responses.CursoResponse;
+import com.msvccursos.domain.models.Usuario;
 import com.msvccursos.infrastructure.services.contracts.CursoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,7 +60,7 @@ public class CursoController {
             , description = "servicio guardar curso")
     @Parameter(name = "request", description = "datos del curso")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "201", description = "created"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     public ResponseEntity<CursoResponse> save(@RequestBody CursoRequest request){
@@ -78,5 +81,57 @@ public class CursoController {
         log.info("<-- endpoint eliminar cursos por id -->");
         cursoService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/asignar-usuario/{cursoId}")
+    @Operation(summary = "servicio para asignar usuario a  cursos",
+               description = "servicio para asignar usuario a  cursos")
+    @Parameters({
+            @Parameter(name = "cursoId", description = "id del curso"),
+            @Parameter(name = "request", description = "datos del usuario")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    public ResponseEntity<Usuario> asignarUsuario(@RequestBody Usuario request,
+                                                  @PathVariable Long cursoId){
+        log.info("<-- endpoint asignar usuario a un curso -->");
+        return ResponseEntity.ok(cursoService.asignarUsuario(request, cursoId).get());
+    }
+
+    @PostMapping("/crear-y-asignar/{cursoId}")
+    @Operation(summary = "servicio para crear y asignar usuario a  cursos",
+            description = "servicio para crear y asignar usuario a  cursos")
+    @Parameters({
+            @Parameter(name = "cursoId", description = "id del curso"),
+            @Parameter(name = "request", description = "datos del usuario")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "created"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    public ResponseEntity<Usuario> saveAndAssign(@RequestBody UsuarioRequest request,
+                                                 @PathVariable Long cursoId){
+        log.info("<-- endpoint crear y  asignar usuario a un curso -->");
+        return ResponseEntity.ok(cursoService.crearUsuario(request, cursoId));
+
+    }
+
+    @DeleteMapping("/eliminar-usuario/{cursoId}")
+    @Operation(summary = "servicio para eliminar usuario a cursos",
+            description = "servicio para eliminar usuario a  cursos")
+    @Parameters({
+            @Parameter(name = "cursoId", description = "id del curso"),
+            @Parameter(name = "request", description = "datos del usuario")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    public ResponseEntity<Usuario> eliminarUsuario(@RequestBody Usuario request,
+                                                   @PathVariable Long cursoId){
+        log.info("<-- endpoint eliminar usuario a un curso -->");
+        return ResponseEntity.ok(cursoService.eliminarUsuario(request, cursoId));
     }
 }

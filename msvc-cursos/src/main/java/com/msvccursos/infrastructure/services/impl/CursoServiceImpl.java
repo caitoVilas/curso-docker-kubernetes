@@ -2,8 +2,12 @@ package com.msvccursos.infrastructure.services.impl;
 
 import com.msvccursos.api.exceptions.customs.NotFoundException;
 import com.msvccursos.api.models.requests.CursoRequest;
+import com.msvccursos.api.models.requests.UsuarioRequest;
 import com.msvccursos.api.models.responses.CursoResponse;
+import com.msvccursos.clients.UsuarioClientRest;
 import com.msvccursos.domain.entities.Curso;
+import com.msvccursos.domain.entities.CursoUsuario;
+import com.msvccursos.domain.models.Usuario;
 import com.msvccursos.domain.repositories.CursoRepository;
 import com.msvccursos.infrastructure.services.contracts.CursoService;
 import com.msvccursos.utils.mappers.CursoMapper;
@@ -13,12 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CursoServiceImpl implements CursoService {
     private final CursoRepository cursoRepository;
+    private final UsuarioClientRest client;
 
     @Override
     @Transactional(readOnly = true)
@@ -49,6 +55,64 @@ public class CursoServiceImpl implements CursoService {
         log.info("---> inicio servicio eliminar cursos");
         this.getOne(id);
         cursoRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Optional<Usuario> asignarUsuario(Usuario usuario, long cursoId) {
+        log.info("--> inicio servicio asignar usuario a curso");
+        var curso = this.getOne(cursoId);
+        try {
+            var usuarioMSVC = client.getById(usuario.getId());
+            var cursoUsuario = CursoUsuario.builder()
+                    .usuarioId(usuarioMSVC.getId())
+                    .build();
+            curso.addCursoUsuario(cursoUsuario);
+            cursoRepository.save(curso);
+            return Optional.of(usuarioMSVC);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    @Transactional
+    public Usuario crearUsuario(UsuarioRequest usuario, Long cursoId) {
+        log.info("--> inicio servicio crear usuario y asignar a curso");
+        var curso = this.getOne(cursoId);
+        try {
+            var usuarioMSVC = client.save(usuario);
+            var cursoUsuario = CursoUsuario.builder()
+                    .usuarioId(usuarioMSVC.getId())
+                    .build();
+            curso.addCursoUsuario(cursoUsuario);
+            cursoRepository.save(curso);
+            return usuarioMSVC;
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public Usuario eliminarUsuario(Usuario usuario, Long cursoId) {
+        log.info("--> inicio servicio eliminar usuario de un  curso");
+        var curso = this.getOne(cursoId);
+        try {
+            var usuarioMSVC = client.getById(usuario.getId());
+            var cursoUsuario = CursoUsuario.builder()
+                    .usuarioId(usuarioMSVC.getId())
+                    .build();
+            curso.removeCursoUsuario(cursoUsuario);
+            cursoRepository.save(curso);
+            return usuarioMSVC;
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+        return null;
     }
 
     private Curso getOne(Long id){

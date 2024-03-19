@@ -3,6 +3,7 @@ package com.msvccursos.api.controllers;
 import com.msvccursos.api.models.requests.CursoRequest;
 import com.msvccursos.api.models.requests.UsuarioRequest;
 import com.msvccursos.api.models.responses.CursoResponse;
+import com.msvccursos.domain.entities.Curso;
 import com.msvccursos.domain.models.Usuario;
 import com.msvccursos.infrastructure.services.contracts.CursoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -133,5 +134,19 @@ public class CursoController {
                                                    @PathVariable Long cursoId){
         log.info("<-- endpoint eliminar usuario a un curso -->");
         return ResponseEntity.ok(cursoService.eliminarUsuario(request, cursoId));
+    }
+
+    @GetMapping("/curso-con-usuarios/{id}")
+    @Operation(summary = "servicio buscar curso por id con sus usuarios"
+            , description = "servicio buscar curso por id con sus usuarios")
+    @Parameter(name = "id", description = "id del curso")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "404", description = "not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    public ResponseEntity<Curso> cursoConUsuarios(@PathVariable Long id){
+        log.info("<-- endpoint buscar curso con sus usuarios -->");
+        return ResponseEntity.ok(cursoService.porIdConUsuarios(id).get());
     }
 }

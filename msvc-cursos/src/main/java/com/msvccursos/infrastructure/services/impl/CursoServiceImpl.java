@@ -4,6 +4,7 @@ import com.msvccursos.api.exceptions.customs.NotFoundException;
 import com.msvccursos.api.models.requests.CursoRequest;
 import com.msvccursos.api.models.requests.UsuarioRequest;
 import com.msvccursos.api.models.responses.CursoResponse;
+import com.msvccursos.api.models.responses.UsuarioResponse;
 import com.msvccursos.clients.UsuarioClientRest;
 import com.msvccursos.domain.entities.Curso;
 import com.msvccursos.domain.entities.CursoUsuario;
@@ -11,6 +12,7 @@ import com.msvccursos.domain.models.Usuario;
 import com.msvccursos.domain.repositories.CursoRepository;
 import com.msvccursos.infrastructure.services.contracts.CursoService;
 import com.msvccursos.utils.mappers.CursoMapper;
+import com.msvccursos.utils.mappers.UsuarioMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -113,6 +115,20 @@ public class CursoServiceImpl implements CursoService {
             log.error(e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public Optional<Curso> porIdConUsuarios(Long id) {
+        log.info("--> inicio servicio buscar un curso con susu usuarios");
+        var curso = this.getOne(id);
+        if (!curso.getCursoUsuarios().isEmpty()){
+            List<Long> ids = curso.getCursoUsuarios().stream()
+                    .map(CursoUsuario::getUsuarioId)
+                    .toList();
+            List<UsuarioResponse> users = client.usersForCourse(ids);
+            curso.setUsuarios(users.stream().map(UsuarioMapper::mapToModel).toList());
+        }
+        return Optional.of(curso);
     }
 
     private Curso getOne(Long id){

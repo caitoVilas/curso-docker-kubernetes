@@ -15,4 +15,5 @@ public interface UsuarioService {
     UsuarioResponse save(UsuarioRequest request);
 
     void delete(Long id);
+    List<UsuarioResponse> ListarPorId(Iterable<Long> ids);
 }

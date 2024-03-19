@@ -16,6 +16,7 @@ public class CursoMapper {
         return CursoResponse.builder()
                 .id(curso.getId())
                 .name(curso.getName())
+                .usuarios(curso.getUsuarios())
                 .build();
     }
 }

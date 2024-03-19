@@ -3,6 +3,7 @@ package com.msvccursos.infrastructure.services.contracts;
 import com.msvccursos.api.models.requests.CursoRequest;
 import com.msvccursos.api.models.requests.UsuarioRequest;
 import com.msvccursos.api.models.responses.CursoResponse;
+import com.msvccursos.domain.entities.Curso;
 import com.msvccursos.domain.models.Usuario;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface CursoService {
     Optional<Usuario> asignarUsuario(Usuario usuario, long cursoId);
     Usuario crearUsuario(UsuarioRequest usuario, Long cursoId);
     Usuario eliminarUsuario(Usuario usuario, Long cursoId);
+    Optional<Curso> porIdConUsuarios(Long id);
 }

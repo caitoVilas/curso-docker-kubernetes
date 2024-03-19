@@ -52,6 +52,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
+    @Override
+    public List<UsuarioResponse> ListarPorId(Iterable<Long> ids) {
+        log.info("---> inicio servicio listar usuarios por id");
+        var users = usuarioRepository.findAllById(ids);
+        return users.stream().map(CursoMapper::mapToDto).toList();
+    }
+
     private Usuario findOne(Long id){
         return usuarioRepository.findById(id).orElseThrow(() -> {
             log.error("ERROR: ".concat("usuario no encontrado"));

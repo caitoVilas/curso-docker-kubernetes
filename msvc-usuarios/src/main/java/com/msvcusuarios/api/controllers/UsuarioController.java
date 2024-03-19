@@ -79,4 +79,21 @@ public class UsuarioController {
         usuarioService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/usuarios-por-curso")
+    @Operation(summary = "servicio buscar usuario por curso"
+            , description = "servicio buscar usuario por curso")
+    @Parameter(name = "ids", description = "id del usuario")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "ok"),
+            @ApiResponse(responseCode = "204", description = "no content"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    public ResponseEntity<List<UsuarioResponse>> usersForCourse(@RequestParam List<Long> ids){
+        log.info("<---- endpoint listar usuarios por curso  ---->");
+        var responses = usuarioService.ListarPorId(ids);
+        if (responses.isEmpty())
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(responses);
+    }
 }
